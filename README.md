@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # script-processor-node-cljs
 
 FIXME: Write a one-line description of your library/project.
@@ -37,3 +38,7 @@ get live reloading, nor a REPL.
 Copyright © 2014 FIXME
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+=======
+# genetic-byte-beats
+Evolving byte beat algorithms using genetic programming.
+>>>>>>> 8abb2555485c6ec0362a022f8d0ea1ce82650b2b
