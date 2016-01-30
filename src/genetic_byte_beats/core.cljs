@@ -32,27 +32,28 @@
   (reset! clock 0))
 
 (defn folded-amp
-  [amp]
-  (let [folded (mod amp 255)]
+  [val]
+  "Quantized input value between 0-255, scaled to -1.0 - 1.0."
+  (let [folded (mod val 255)]
     (- (* 2 (/ folded 255.0)) 1)))
 
-(defn sample-gen
-  [t gen-func]
-  (folded-amp (gen-func t)))
-
 (defn fill-buffer!
-  [out-buff fill-func]
+  [out-buff buffer-sample-gen]
+  "Fill a sample buffer with a given generator. The generator should accept one argument
+   for the buffer index."
   (let [buff-size (.-length out-buff)
         buff-positions (range 0 buff-size)
         samples (.getChannelData out-buff 0)]
-    (doseq [s buff-positions]
-      (aset samples s (fill-func s)))))
+    (doseq [buff-index buff-positions]
+      (aset samples buff-index (buffer-sample-gen buff-index)))))
 
 (defn processor
-  [gen-func ap-event]
-  (let [out-buff (.-outputBuffer ap-event)]
-    (fill-buffer! out-buff
-                  #(sample-gen (+ @clock %) gen-func))
+  [sample-gen ap-event]
+  "Function that fills the audio buffer in an autioprocess event with samples from using
+   sample-gen ranging over the global clock."
+  (let [out-buff (.-outputBuffer ap-event)
+        buffer-sample-gen (fn [buff-index] (sample-gen (+ buff-index @clock)))]
+    (fill-buffer! out-buff (comp folded-amp buffer-sample-gen))
     (swap! clock #(+ % (.-length out-buff)))))
 
 (defn play
