@@ -3,34 +3,6 @@
 
 (enable-console-print!)
 
-(defn context
-  []
-  (js/AudioContext.))
-
-(defn script-processor-node
-  [ctx buff-size num-input-chan num-output-chan]
-  (.createScriptProcessor ctx buff-size num-input-chan num-output-chan))
-
-(defonce ctx (context))
-(defonce node (script-processor-node ctx 4096 1 1))
-(defonce clock (atom 0))
-
-(defn disconnect-output
-  [node]
-  (.disconnect node (.-destination ctx)))
-
-(defn connect-output
-  [node]
-  (.connect node (.-destination ctx)))
-
-(defn configure-node-processor
-  [node processor-fn]
-  (set! (.-onaudioprocess node) processor-fn))
-
-(defn reset-clock!
-  []
-  (reset! clock 0))
-
 (defn folded-amp
   [val]
   "Quantized input value between 0-255, scaled to -1.0 - 1.0."
@@ -56,16 +28,45 @@
     (fill-buffer! out-buff (comp folded-amp buffer-sample-gen))
     (swap! clock-ref #(+ % (.-length out-buff)))))
 
+(defn context
+  []
+  (js/AudioContext.))
+
+(defn script-processor-node
+  [ctx buff-size num-input-chan num-output-chan]
+  (.createScriptProcessor ctx buff-size num-input-chan num-output-chan))
+
+(defn volume-node
+  [start-gain]
+  (let [node (.createGain ctx)]
+    (set! (.-value (.-gain node)) start-gain)
+    node))
+
+(defn configured-node-processor
+  [node processor-fn]
+  (set! (.-onaudioprocess node) processor-fn)
+  node)
+
+(defn reset-clock!
+  []
+  (reset! clock 0))
+
 (defn play
   [gen-func]
   (reset-clock!)
   (let [event-processor (partial processor gen-func clock)]
-    (configure-node-processor node event-processor)
-    (connect-output node)))
+    (configured-node-processor processor-node event-processor)
+    (.connect vol-node (.-destination ctx))
+    (.connect processor-node vol-node)))
 
 (defn stop
   []
-  (disconnect-output node))
+  (.disconnect processor-node vol-node)
+  (.disconnect vol-node (.-destination ctx)))
+
+(defn volume
+  [v]
+  (set! (.-value (.-gain vol-node)) v))
 
 (comment
   (play viznut/yv1f1)
