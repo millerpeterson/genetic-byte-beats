@@ -48,19 +48,20 @@
       (aset samples buff-index (buffer-sample-gen buff-index)))))
 
 (defn processor
-  [sample-gen ap-event]
+  [sample-gen clock-ref ap-event]
   "Function that fills the audio buffer in an autioprocess event with samples from using
-   sample-gen ranging over the global clock."
+   sample-gen ranging over a clock's values."
   (let [out-buff (.-outputBuffer ap-event)
-        buffer-sample-gen (fn [buff-index] (sample-gen (+ buff-index @clock)))]
+        buffer-sample-gen (fn [buff-index] (sample-gen (+ buff-index (deref clock-ref))))]
     (fill-buffer! out-buff (comp folded-amp buffer-sample-gen))
-    (swap! clock #(+ % (.-length out-buff)))))
+    (swap! clock-ref #(+ % (.-length out-buff)))))
 
 (defn play
   [gen-func]
   (reset-clock!)
-  (configure-node-processor node (partial processor gen-func))
-  (connect-output node))
+  (let [event-processor (partial processor gen-func clock)]
+    (configure-node-processor node event-processor)
+    (connect-output node)))
 
 (defn stop
   []
