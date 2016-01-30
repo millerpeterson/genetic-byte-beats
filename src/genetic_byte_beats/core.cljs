@@ -19,14 +19,18 @@
     (doseq [buff-index buff-positions]
       (aset samples buff-index (buffer-sample-gen buff-index)))))
 
-(defn processor
-  [sample-gen clock-ref ap-event]
-  "Function that fills the audio buffer in an autioprocess event with samples from using
-   sample-gen ranging over a clock's values."
-  (let [out-buff (.-outputBuffer ap-event)
-        buffer-sample-gen (fn [buff-index] (sample-gen (+ buff-index (deref clock-ref))))]
-    (fill-buffer! out-buff (comp folded-amp buffer-sample-gen))
-    (swap! clock-ref #(+ % (.-length out-buff)))))
+(defn audio-event-processor
+  [clock-ref sample-gen rate-ratio]
+  "A function that fills the audio buffer in an autioprocess event with samples from using
+   sample-gen ranging over a clock's values, rate adjusted according to a sample rate ratio."
+  (fn [ap-event]
+    (let [out-buff (.-outputBuffer ap-event)
+          buffer-sample-gen (fn [buff-index]
+                              (let [clock-rel-t (+ buff-index (deref clock-ref))
+                                    rate-adjusted-t (Math/floor (/ clock-rel-t rate-ratio))]
+                                (sample-gen rate-adjusted-t)))]
+      (fill-buffer! out-buff (comp folded-amp buffer-sample-gen))
+      (swap! clock-ref #(+ % (.-length out-buff))))))
 
 (defn context
   []
@@ -37,7 +41,7 @@
   (.createScriptProcessor ctx buff-size num-input-chan num-output-chan))
 
 (defn volume-node
-  [start-gain]
+  [ctx start-gain]
   (let [node (.createGain ctx)]
     (set! (.-value (.-gain node)) start-gain)
     node))
@@ -47,14 +51,20 @@
   (set! (.-onaudioprocess node) processor-fn)
   node)
 
+(defonce ctx (context))
+(defonce vol-node (volume-node ctx 0.075))
+(defonce processor-node (script-processor-node ctx 4096 1 1))
+(defonce clock (atom 0))
+
 (defn reset-clock!
   []
   (reset! clock 0))
 
 (defn play
-  [gen-func]
+  [gen-func sample-rate]
   (reset-clock!)
-  (let [event-processor (partial processor gen-func clock)]
+  (let [rate-ratio (/ (.-sampleRate ctx) sample-rate)
+        event-processor (audio-event-processor clock gen-func rate-ratio)]
     (configured-node-processor processor-node event-processor)
     (.connect vol-node (.-destination ctx))
     (.connect processor-node vol-node)))
@@ -69,10 +79,10 @@
   (set! (.-value (.-gain vol-node)) v))
 
 (comment
-  (play viznut/yv1f1)
-  (play viznut/yv1f2)
-  (play viznut/yv1f3)
-  (play viznut/yv1f4)
+  (play viznut/yv1f1 8000)
+  (play viznut/yv1f2 8000)
+  (play viznut/yv1f3 8000)
+  (play viznut/yv1f4 8000)
   (stop))
 
 (defn on-js-reload [])
