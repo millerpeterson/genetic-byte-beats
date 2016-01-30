@@ -83,6 +83,7 @@
   (play viznut/yv1f2 8000)
   (play viznut/yv1f3 8000)
   (play viznut/yv1f4 8000)
+  (play viznut/yv1f5 8000)
   (stop))
 
 (defn on-js-reload [])

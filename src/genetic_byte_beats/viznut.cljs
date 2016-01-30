@@ -26,3 +26,20 @@
                 (bit-shift-right t 8)
                 123
                 (bit-shift-right t 3))))
+
+(defn yv1f5
+  [t]
+  (* t (bit-and (* (bit-shift-right t 8)
+                   (bit-or (bit-shift-right t 15)
+                           (bit-shift-right t 8)))
+                (bit-or 20
+                        (bit-shift-right (* (bit-shift-right t 19) 5) t)
+                        (bit-shift-right t 3)))))
+
+(defn tv1f6
+  [t]
+  0)
+
+(defn tv1f7
+  [t]
+  0)
