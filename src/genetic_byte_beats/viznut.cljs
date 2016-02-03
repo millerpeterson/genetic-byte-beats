@@ -21,7 +21,7 @@
                 (bit-shift-right t 6))))
 
 (defn yv1f4
-  [t]
+[t]
   (* t (bit-and (bit-shift-right t 11)
                 (bit-shift-right t 8)
                 123
@@ -36,10 +36,19 @@
                         (bit-shift-right (* (bit-shift-right t 19) 5) t)
                         (bit-shift-right t 3)))))
 
-(defn tv1f6
+(defn yv1f6
   [t]
-  0)
+  (+ (bit-shift-right (* (bit-and (* -1 t) 4095)
+                         (bit-and 255
+                                  (* t (bit-and t (bit-shift-right t 13)))))
+                      12)
+     (bit-and 127 (bit-shift-right (* t (bit-and (bit-and 234 (bit-shift-right t 8))
+                                                 (bit-shift-right t 3)))
+                                   (bit-and 3 (bit-shift-right t 14))))))
 
-(defn tv1f7
+(defn yv1f7
   [t]
-  0)
+  (* t (bit-and (bit-shift-right t (bit-or (bit-shift-right t 9)
+                                           (bit-shift-right t 8)))
+                63
+                (bit-shift-right t 4))))
