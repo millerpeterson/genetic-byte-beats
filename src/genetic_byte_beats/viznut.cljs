@@ -1,54 +1,47 @@
 (ns genetic-byte-beats.viznut)
 
-(defn yv1f1
-  [t]
-  (* t (bit-and (bit-or (bit-shift-right t 12)
-                        (bit-shift-right t 8))
-                63
-                (bit-shift-right t 4))))
+(def yv1f1
+  '(* t (bit-and (bit-or (bit-shift-right t 12)
+                         (bit-shift-right t 8))
+                 63
+                 (bit-shift-right t 4))))
 
-(defn yv1f2
-  [t]
-  (* t (bit-shift-right (bit-or (bit-shift-right t 5)
-                                (bit-shift-right t 8))
-                        (bit-shift-right t 16))))
+(def yv1f2
+  '(* t (bit-shift-right (bit-or (bit-shift-right t 5)
+                                 (bit-shift-right t 8))
+                         (bit-shift-right t 16))))
 
-(defn yv1f3
-  [t]
-  (* t (bit-and (bit-or (bit-shift-right t 9)
-                        (bit-shift-right t 13))
-                25
-                (bit-shift-right t 6))))
+(def yv1f3
+  '(* t (bit-and (bit-or (bit-shift-right t 9)
+                         (bit-shift-right t 13))
+                 25
+                 (bit-shift-right t 6))))
 
-(defn yv1f4
-[t]
-  (* t (bit-and (bit-shift-right t 11)
-                (bit-shift-right t 8)
-                123
-                (bit-shift-right t 3))))
+(def yv1f4
+  '(* t (bit-and (bit-shift-right t 11)
+                 (bit-shift-right t 8)
+                 123
+                 (bit-shift-right t 3))))
 
-(defn yv1f5
-  [t]
-  (* t (bit-and (* (bit-shift-right t 8)
-                   (bit-or (bit-shift-right t 15)
-                           (bit-shift-right t 8)))
-                (bit-or 20
-                        (bit-shift-right (* (bit-shift-right t 19) 5) t)
-                        (bit-shift-right t 3)))))
+(def yv1f5
+  '(* t (bit-and (* (bit-shift-right t 8)
+                    (bit-or (bit-shift-right t 15)
+                            (bit-shift-right t 8)))
+                 (bit-or 20
+                         (bit-shift-right (* (bit-shift-right t 19) 5) t)
+                         (bit-shift-right t 3)))))
 
-(defn yv1f6
-  [t]
-  (+ (bit-shift-right (* (bit-and (* -1 t) 4095)
-                         (bit-and 255
-                                  (* t (bit-and t (bit-shift-right t 13)))))
-                      12)
-     (bit-and 127 (bit-shift-right (* t (bit-and (bit-and 234 (bit-shift-right t 8))
-                                                 (bit-shift-right t 3)))
-                                   (bit-and 3 (bit-shift-right t 14))))))
+(def yv1f6
+  '(+ (bit-shift-right (* (bit-and (* -1 t) 4095)
+                          (bit-and 255
+                                   (* t (bit-and t (bit-shift-right t 13)))))
+                       12)
+      (bit-and 127 (bit-shift-right (* t (bit-and (bit-and 234 (bit-shift-right t 8))
+                                                  (bit-shift-right t 3)))
+                                    (bit-and 3 (bit-shift-right t 14))))))
 
-(defn yv1f7
-  [t]
-  (* t (bit-and (bit-shift-right t (bit-or (bit-shift-right t 9)
-                                           (bit-shift-right t 8)))
-                63
-                (bit-shift-right t 4))))
+(def yv1f7
+  '(* t (bit-and (bit-shift-right t (bit-or (bit-shift-right t 9)
+                                            (bit-shift-right t 8)))
+                 63
+                 (bit-shift-right t 4))))
