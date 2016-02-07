@@ -45,3 +45,12 @@
                                             (bit-shift-right t 8)))
                  63
                  (bit-shift-right t 4))))
+
+(def forms
+  [yv1f1
+   yv1f2
+   yv1f3
+   yv1f4
+   yv1f5
+   yv1f6
+   yv1f7])

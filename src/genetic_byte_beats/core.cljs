@@ -1,5 +1,6 @@
 (ns genetic-byte-beats.core
   (:require [genetic-byte-beats.viznut :as viznut]
+            [genetic-byte-beats.gene-ops :as gene-ops]
             [genetic-byte-beats.io :as io]
             [cljs.js :refer [empty-state eval js-eval]]))
 
@@ -50,6 +51,7 @@
   (play (sample-gen-func viznut/yv1f5) 8000)
   (play (sample-gen-func viznut/yv1f6) 8000)
   (play (sample-gen-func viznut/yv1f7) 8000)
+  (play (sample-gen-func (first (gene-ops/random-children viznut/forms))) 8000)
   (stop))
 
 (defn on-js-reload [])
