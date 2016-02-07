@@ -51,7 +51,7 @@
   (play (sample-gen-func viznut/yv1f5) 8000)
   (play (sample-gen-func viznut/yv1f6) 8000)
   (play (sample-gen-func viznut/yv1f7) 8000)
-  (play (sample-gen-func (first (gene-ops/random-children viznut/forms))) 8000)
+  (play (sample-gen-func (gene-ops/random-child viznut/forms)) 8000)
   (stop))
 
 (defn on-js-reload [])
