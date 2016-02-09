@@ -8,7 +8,8 @@
                  [org.clojure/clojurescript "1.7.170"]
                  [org.clojure/core.async "0.2.374"]
                  [com.cemerick/piggieback "0.2.1"]
-                 [org.clojure/tools.nrepl "0.2.10"]]
+                 [org.clojure/tools.nrepl "0.2.10"]
+                 [com.lucasbradstreet/instaparse-cljs "1.4.1.0"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.5.0-3"]]
