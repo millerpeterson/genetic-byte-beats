@@ -29,10 +29,20 @@
 (defn ast-from-parsed
   [parsed-form]
   (insta/transform
-    {:bit-or (fn [x y] `(~(symbol "bit-or") ~x ~y))
-     :bit-and (fn [x y] `(~(symbol "bit-and") ~x ~y))
-     :shift-left (fn [x y] `(~(symbol "bit-shift-left") ~x ~y))
-     :shift-right (fn [x y] `(~(symbol "bit-shift-right") ~x ~y))}
+    {:expr        identity
+     :bit-or      (fn [x y] `(~'bit-or ~x ~y))
+     :bit-xor     (fn [x y] `(~'bit-xor ~x ~y))
+     :bit-and     (fn [x y] `(~'bit-and ~x ~y))
+     :shift-left  (fn [x y] `(~'bit-shift-left ~x ~y))
+     :shift-right (fn [x y] `(~'bit-shift-right ~x ~y))
+     :add         (fn [x y] `(~'+ ~x ~y))
+     :sub         (fn [x y] `(~'- ~x ~y))
+     :mult        (fn [x y] `(~'* ~x ~y))
+     :div         (fn [x y] `(~'/ ~x ~y))
+     :mod         (fn [x y] `(~'mod ~x ~y))
+     :variable    symbol
+     :floating    js/parseFloat
+     :integer     js/parseInt}
     parsed-form))
 
 (defn parsed-form
