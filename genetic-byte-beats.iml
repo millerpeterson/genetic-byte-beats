@@ -17,6 +17,7 @@
     <orderEntry type="library" name="Leiningen: clojure-complete:0.2.3" level="project" />
     <orderEntry type="library" name="Leiningen: com.cemerick/piggieback:0.2.1" level="project" />
     <orderEntry type="library" name="Leiningen: com.google.javascript/closure-compiler:v20151015" level="project" />
+    <orderEntry type="library" name="Leiningen: com.lucasbradstreet/instaparse-cljs:1.4.1.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.7.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/clojurescript:1.7.170" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.async:0.2.374" level="project" />

@@ -2,6 +2,7 @@
   (:require [instaparse.core :as insta]))
 
 (def parser
+  "CFG for parsing byte beat formulas."
   (insta/parser
     "expr          = bitwise-or
      <bitwise-or>  = bitwise-xor | bit-or
@@ -27,6 +28,7 @@
      integer       = #'-{0,1}\\d+'"))
 
 (defn ast-from-parsed
+  "Return the AST from the parsed form of a byte beat formula."
   [parsed-form]
   (insta/transform
     {:expr        identity
@@ -45,6 +47,8 @@
      :integer     js/parseInt}
     parsed-form))
 
-(defn parsed-form
+(defn ast-from-string
+  "Return the formula AST from a string representation of a byte
+  beat formula."
   [form-str]
   (ast-from-parsed (parser form-str)))
