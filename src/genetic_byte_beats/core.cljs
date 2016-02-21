@@ -69,7 +69,7 @@
   (stop)
   (play (sample-gen-func viznut/yv1f4))
   (stop)
-  (let [offspring (gene-ops/crossover viznut/yv1f1
+  (let [offspring (gene-ops/crossover (gene-ops/mutate viznut/yv1f1)
                                       viznut/yv1f4)]
     (println offspring)
     (play (sample-gen-func offspring)))
@@ -80,7 +80,7 @@
   (stop)
   (play (sample-gen-func viznut/yv1f7))
   (stop)
-  (let [offspring (gene-ops/crossover viznut/yv1f2
+  (let [offspring (gene-ops/crossover (gene-ops/mutate viznut/yv1f2)
                                       viznut/yv1f7)]
     (println offspring)
     (play (sample-gen-func offspring)))

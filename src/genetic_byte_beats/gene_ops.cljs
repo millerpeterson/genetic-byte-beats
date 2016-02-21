@@ -15,6 +15,19 @@
         all-locs (take-while (complement zip/end?) (iterate zip/next zipper))]
     (filter #(not (gene-fns (zip/node %))) all-locs)))
 
+(defn constant-locs
+  "All constants in the operator tree of a given formula."
+  [formula]
+  (filter (comp number? zip/node) (op-tree-locs formula)))
+
+(defn mutate
+  "Randomly modify a random number in a formula up to a max percent."
+  ([formula]
+   (mutate formula 0.3))
+  ([formula max-percent]
+   (zip/root (zip/edit (rand-nth (constant-locs formula))
+                       (comp int (partial * (+ 1 (* (rand) max-percent))))))))
+
 (defn replace-branch
   "Replace a formula branch rooted at l with a formula branch rooted at r."
   [l r]
@@ -30,6 +43,6 @@
 
 (defn random-child
   "Return a child formula resulting from crossing over two randomly chosen
-   formula from forms."
+   formula from forms, then mutating it."
   [forms]
-  (crossover (rand-nth forms) (rand-nth forms)))
+  (mutate (crossover (rand-nth forms) (rand-nth forms))))
