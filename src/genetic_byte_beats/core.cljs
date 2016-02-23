@@ -87,6 +87,8 @@
   (stop)
 
   ; Random breeding of Viznut's formulas.
-  (play (sample-gen-func (gene-ops/random-child viznut/forms)) 8000))
+  (play (sample-gen-func (gene-ops/random-child viznut/forms)))
+
+  )
 
 (defn on-js-reload [])
