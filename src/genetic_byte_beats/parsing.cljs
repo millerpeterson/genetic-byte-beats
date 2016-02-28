@@ -21,7 +21,9 @@
      mult          = mult-div <'*'> term
      div           = mult-div <'/'> term
      mod           = mult-div <'%'> term
-     <term>        = number | variable | <'('> bitwise-or <')'>
+     int-cast      = <'(int)('> bitwise-or <')'>
+     sin           = <'sin('> bitwise-or <')'>
+     <term>        = number | variable | <'('> bitwise-or <')'> | int-cast | sin
      variable      = 't'
      <number>      = floating | integer
      floating      = #'-{0,1}\\d+\\.\\d+'
@@ -42,6 +44,8 @@
      :mult        (fn [x y] `(~'* ~x ~y))
      :div         (fn [x y] `(~'/ ~x ~y))
      :mod         (fn [x y] `(~'mod ~x ~y))
+     :int-cast    (fn [x] `(~'int ~x))
+     :sin         (fn [x] `(~'js/Math.sin ~x))
      :variable    symbol
      :floating    js/parseFloat
      :integer     js/parseInt}
