@@ -1,6 +1,9 @@
 (ns genetic-byte-beats.forms.erlehmann
   (:require [genetic-byte-beats.parsing :as parsing]))
 
+; Formulas from the collection here:
+; https://github.com/erlehmann/algorithmic-symphonies
+
 (def forms-strs
   ["t*2&(t<<2^t>>6) | t*4&(t<<2^t>>7) | t*6&(t<<2^t>>8)"
    "t*2&(t<<3^t>>6) | t*4&(t<<3^t>>7) | t*6&(t<<3^t>>8)"

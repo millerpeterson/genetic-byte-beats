@@ -1,5 +1,8 @@
 (ns genetic-byte-beats.forms.viznut)
 
+; Viznut's original formulas.
+
+; https://www.youtube.com/watch?v=GtQdIYUtAHg
 (def yv1f1
   '(* t (bit-and (bit-or (bit-shift-right t 12)
                          (bit-shift-right t 8))
