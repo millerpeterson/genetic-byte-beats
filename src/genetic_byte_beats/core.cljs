@@ -1,5 +1,7 @@
 (ns genetic-byte-beats.core
-  (:require [genetic-byte-beats.viznut :as viznut]
+  (:require [genetic-byte-beats.forms.viznut :as viznut]
+            [genetic-byte-beats.forms.erlehmann :as erlehmann]
+            [genetic-byte-beats.parsing :as parsing]
             [genetic-byte-beats.gene-ops :as gene-ops]
             [genetic-byte-beats.io :as io]
             [cljs.js :refer [empty-state eval js-eval]]))
@@ -64,6 +66,9 @@
   (play (sample-gen-func viznut/yv1f7))
   (stop)
 
+  ;Erlehmann's formulas.
+  (play (sample-gen-func (nth erlehmann/forms 50)))
+
   ; Breeding Viznut's 1st and 4th YouTube formulas.
   (play (sample-gen-func viznut/yv1f1))
   (stop)
@@ -71,17 +76,6 @@
   (stop)
   (let [offspring (gene-ops/crossover (gene-ops/mutate viznut/yv1f1)
                                       viznut/yv1f4)]
-    (println offspring)
-    (play (sample-gen-func offspring)))
-  (stop)
-
-  ; Breeding Viznut's 2nd and 7th YouTube formulas.
-  (play (sample-gen-func viznut/yv1f2))
-  (stop)
-  (play (sample-gen-func viznut/yv1f7))
-  (stop)
-  (let [offspring (gene-ops/crossover (gene-ops/mutate viznut/yv1f2)
-                                      viznut/yv1f7)]
     (println offspring)
     (play (sample-gen-func offspring)))
   (stop)

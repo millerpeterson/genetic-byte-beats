@@ -1,4 +1,4 @@
-(ns genetic-byte-beats.viznut)
+(ns genetic-byte-beats.forms.viznut)
 
 (def yv1f1
   '(* t (bit-and (bit-or (bit-shift-right t 12)
