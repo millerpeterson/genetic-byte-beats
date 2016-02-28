@@ -1,8 +1,8 @@
 (ns genetic-byte-beats.parsing
   (:require [instaparse.core :as insta]))
 
+"CFG for parsing byte beat formulas."
 (def parser
-  "CFG for parsing byte beat formulas."
   (insta/parser
     "expr          = bitwise-or
      <bitwise-or>  = bitwise-xor | bit-or
@@ -51,4 +51,6 @@
   "Return the formula AST from a string representation of a byte
   beat formula."
   [form-str]
-  (ast-from-parsed (parser form-str)))
+  (ast-from-parsed
+    (parser
+       (clojure.string/replace form-str " " ""))))
