@@ -23,11 +23,13 @@
      mod           = mult-div <'%'> term
      int-cast      = <'(int)('> bitwise-or <')'>
      sin           = <'sin('> bitwise-or <')'>
-     <term>        = number | variable | <'('> bitwise-or <')'> | int-cast | sin
+     tan           = <'tan('> bitwise-or <')'>
+     <term>        = number | variable | <'('> bitwise-or <')'> | int-cast | sin | tan
      variable      = 't'
-     <number>      = floating | integer
+     <number>      = floating | integer | hex
      floating      = #'-{0,1}\\d+\\.\\d+'
-     integer       = #'-{0,1}\\d+'"))
+     integer       = #'-{0,1}\\d+'
+     hex           = #'-{0,1}0x(\\d|[a-f]|[A-F])+'"))
 
 (defn ast-from-parsed
   "Return the AST from the parsed form of a byte beat formula."
@@ -46,9 +48,11 @@
      :mod         (fn [x y] `(~'mod ~x ~y))
      :int-cast    (fn [x] `(~'int ~x))
      :sin         (fn [x] `(~'js/Math.sin ~x))
+     :tan         (fn [x] `(~'js/Math.tan ~x))
      :variable    symbol
      :floating    js/parseFloat
-     :integer     js/parseInt}
+     :integer     js/parseInt
+     :hex         js/parseInt}
     parsed-form))
 
 (defn ast-from-string
