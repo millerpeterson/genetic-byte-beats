@@ -6,7 +6,10 @@
 
 (def gene-fns
   "Symbols that are functions that may appear in the formulas."
-  #{'* '+ 'bit-and 'bit-or 'bit-shift-right})
+  #{'* '/ '+ '- 'mod
+    'bit-and 'bit-or 'bit-xor
+    'bit-shift-right 'bit-shift-left
+    'js/Math.sin 'js/Math.tan 'int})
 
 (defn op-tree-locs
   "All valid locations in the operator tree of a given formula."
@@ -23,10 +26,11 @@
 (defn mutate
   "Randomly modify a random number in a formula up to a max percent."
   ([formula]
-   (mutate formula 0.3))
+   (mutate formula 0.5))
   ([formula max-percent]
    (zip/root (zip/edit (rand-nth (constant-locs formula))
-                       (comp int (partial * (+ 1 (* (rand) max-percent))))))))
+                       (comp int (partial * (+ 1
+                                               (- (* (rand) 2 max-percent) max-percent))))))))
 
 (defn replace-branch
   "Replace a formula branch rooted at l with a formula branch rooted at r."

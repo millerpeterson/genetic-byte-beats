@@ -1,4 +1,5 @@
-(ns genetic-byte-beats.io)
+(ns genetic-byte-beats.io
+  (:require [cljs.js :refer [empty-state eval js-eval]]))
 
 (defn fill-buffer!
   [out-buff buffer-sample-gen]
@@ -51,3 +52,14 @@
   (let [node (.createGain ctx)]
     (set! (.-value (.-gain node)) start-gain)
     node))
+
+(defn sample-gen-func
+  "Return a function for generating sample values from the AST of a gen formula."
+  [gen-ast]
+  (let [func-def (cons 'fn (cons '[t] (list gen-ast)))]
+    (eval (empty-state)
+          func-def
+          {:eval js-eval
+           :source-map true
+           :context :expr}
+          identity)))
