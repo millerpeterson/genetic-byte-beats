@@ -1,10 +1,7 @@
 (ns genetic-byte-beats.core
-  (:require [genetic-byte-beats.forms.viznut :as viznut]
-            [genetic-byte-beats.forms.erlehmann :as erlehmann]
-            [genetic-byte-beats.parsing :as parsing]
+  (:require [genetic-byte-beats.forms.erlehmann :as erlehmann]
             [genetic-byte-beats.gene-ops :as gene-ops]
-            [genetic-byte-beats.io :as io]
-            [cljs.js :refer [empty-state eval js-eval]]))
+            [genetic-byte-beats.io :as io]))
 
 (enable-console-print!)
 
@@ -12,24 +9,24 @@
 (defonce vol-node (io/volume-node ctx 0.1))
 (defonce processor-node (io/script-processor-node ctx 4096 1 1))
 (defonce clock (atom 0))
+(defonce history (atom []))
 
-(defn sample-gen-func
-  "Return a function for generating sample values from the AST of a gen formula."
-  [gen-ast]
-  (let [func-def (cons 'fn (cons '[t] (list gen-ast)))]
-    (eval (empty-state)
-          func-def
-          {:eval js-eval
-           :source-map true
-           :context :expr}
-          identity)))
+(defn reset-clock
+  "Reset formula clock."
+  []
+  (reset! clock 0))
+
+(defn volume
+  "Adjust volume."
+  [v]
+  (set! (.-value (.-gain vol-node)) v))
 
 (defn play
   "Start playback for a sample generating function at a given sample rate."
   ([gen-func]
     (play gen-func 8000))
   ([gen-func sample-rate]
-   (reset-clock!)
+   (reset-clock)
    (let [rate-ratio (/ (.-sampleRate ctx) sample-rate)
          event-processor (io/audio-event-processor clock gen-func rate-ratio)]
      (io/configure-node-processor processor-node event-processor)
@@ -37,52 +34,49 @@
      (.connect processor-node vol-node))))
 
 (defn stop
-  "Stop playback of the current sample generating functino."
+  "Stop playback of the current sample generating function."
   []
   (.disconnect processor-node vol-node)
   (.disconnect vol-node (.-destination ctx)))
 
-(defn volume
-  "Adjust volume."
-  [v]
-  (set! (.-value (.-gain vol-node)) v))
+(defn new-line
+  "Create a new cell line, starting with a random formula
+  from a given group of formulas."
+  [forms]
+  (do
+    (swap! history #(vector (rand-nth forms)))
+    (play (io/sample-gen-func (first @history)))
+    (println (first @history))))
 
-(defn reset-clock!
-  "Reset formula clock."
+(defn mutate
+  "Mutate the last formula."
   []
-  (reset! clock 0))
+  (let [mutated (gene-ops/mutate (last @history))]
+    (swap! history #(conj % mutated))
+    (play (io/sample-gen-func mutated))
+    (println mutated)))
+
+(defn breed
+  [mate-forms]
+  "Breed the last formula with a random element from a group of mate
+  formulas."
+  (let [bred (gene-ops/crossover (last @history)
+                                 (rand-nth mate-forms))]
+    (swap! history #(conj % bred))
+    (play (io/sample-gen-func bred))
+    (println bred)))
 
 (comment
-  (reset-clock!)
-  (volume 0.01)
+  (reset-clock)
+  (volume 0.5)
 
-  ; Formulas from Viznut's video.
-  (play (sample-gen-func viznut/yv1f1))
-  (play (sample-gen-func viznut/yv1f2))
-  (play (sample-gen-func viznut/yv1f3))
-  (play (sample-gen-func viznut/yv1f4))
-  (play (sample-gen-func viznut/yv1f5))
-  (play (sample-gen-func viznut/yv1f6))
-  (play (sample-gen-func viznut/yv1f7))
+  (new-line erlehmann/forms)
+  (breed erlehmann/forms)
+  (mutate)
+
+  (println (last @history))
+
   (stop)
-
-  ;Erlehmann's formulas.
-  (play (sample-gen-func (nth erlehmann/forms 50)))
-
-  ; Breeding Viznut's 1st and 4th YouTube formulas.
-  (play (sample-gen-func viznut/yv1f1))
-  (stop)
-  (play (sample-gen-func viznut/yv1f4))
-  (stop)
-  (let [offspring (gene-ops/crossover (gene-ops/mutate viznut/yv1f1)
-                                      viznut/yv1f4)]
-    (println offspring)
-    (play (sample-gen-func offspring)))
-  (stop)
-
-  ; Random breeding of Viznut's formulas.
-  (play (sample-gen-func (gene-ops/random-child viznut/forms)))
-
-  )
+)
 
 (defn on-js-reload [])
