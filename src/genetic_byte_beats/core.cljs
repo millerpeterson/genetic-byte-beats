@@ -67,8 +67,9 @@
     (println bred)))
 
 (comment
+
   (reset-clock)
-  (volume 0.5)
+  (volume 0.1)
 
   (new-line erlehmann/forms)
   (breed erlehmann/forms)

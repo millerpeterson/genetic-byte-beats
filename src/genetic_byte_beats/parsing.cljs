@@ -62,3 +62,32 @@
   (ast-from-parsed
     (parser
        (clojure.string/replace form-str " " ""))))
+
+(def op-string-output-map
+  {'bit-or "|"
+   'bit-xor "^"
+   'bit-and "&"
+   'bit-shift-left "<<"
+   'bit-shift-right ">>"
+   '+ "+"
+   '- "-"
+   '* "*"
+   '/ "/"
+   'mod "%"
+   'int "(int)"
+   'js/Math.sin "sin"
+   'js/Math.tan "tan"})
+
+(defn string-from-ast
+  "Return the string representation from the AST of a byte
+  beat formula."
+  [ast]
+  (cond
+    (= () ast) "()"
+    (and (list? ast) (= (count ast) 1)) (string-from-ast (first ast))
+    (and (list? ast) (= (count ast) 2)) (str (op-string-output-map (first ast))
+                                             "(" (string-from-ast (second ast)) ")")
+    (and (list? ast) (= (count ast) 3)) (str "(" (string-from-ast (second ast))
+                                             " " (op-string-output-map (first ast))
+                                             " " (string-from-ast (nth ast 2)) ")")
+    :else (str ast)))
