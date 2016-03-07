@@ -1,7 +1,8 @@
 (ns genetic-byte-beats.core
   (:require [genetic-byte-beats.forms.erlehmann :as erlehmann]
             [genetic-byte-beats.gene-ops :as gene-ops]
-            [genetic-byte-beats.io :as io]))
+            [genetic-byte-beats.io :as io]
+            [genetic-byte-beats.forms.evolved :as evolved]))
 
 (enable-console-print!)
 
@@ -48,11 +49,11 @@
 
 (defn new-line
   "Create a new cell line, starting with a random formula
-  from a given group of formulas."
+  bred from two random parents from a given group of formulas."
   [forms]
-  (do
-    (swap! history #(vector (rand-nth forms)))
-    (play-and-print (first @history))))
+  (let [starter (gene-ops/random-child forms)]
+    (swap! history #(vector starter)))
+    (play-and-print (first @history)))
 
 (defn mutate
   "Add a new cell to the line by mutating the last
@@ -83,8 +84,8 @@
 (comment
   (reset-clock)
   (volume 0.1)
-  (new-line erlehmann/forms)
-  (breed erlehmann/forms)
+  (new-line (into erlehmann/forms evolved/forms))
+  (breed (into erlehmann/forms evolved/forms))
   (mutate)
   (undo)
   (println (last @history))
