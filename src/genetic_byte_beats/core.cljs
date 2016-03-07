@@ -39,44 +39,55 @@
   (.disconnect processor-node vol-node)
   (.disconnect vol-node (.-destination ctx)))
 
+(defn play-and-print
+  "Play an AST and print it."
+  [ast]
+  (do
+    (play (io/sample-gen-func ast))
+    (println ast)))
+
 (defn new-line
   "Create a new cell line, starting with a random formula
   from a given group of formulas."
   [forms]
   (do
     (swap! history #(vector (rand-nth forms)))
-    (play (io/sample-gen-func (first @history)))
-    (println (first @history))))
+    (play-and-print (first @history))))
 
 (defn mutate
-  "Mutate the last formula."
+  "Add a new cell to the line by mutating the last
+  formula then playing it."
   []
   (let [mutated (gene-ops/mutate (last @history))]
     (swap! history #(conj % mutated))
-    (play (io/sample-gen-func mutated))
-    (println mutated)))
+    (play-and-print mutated)))
 
 (defn breed
   [mate-forms]
-  "Breed the last formula with a random element from a group of mate
-  formulas."
+  "Add a new cell to the line by breeding the last formula with
+  a random element from a group of mate formulas, then play it."
   (let [bred (gene-ops/crossover (last @history)
                                  (rand-nth mate-forms))]
     (swap! history #(conj % bred))
-    (play (io/sample-gen-func bred))
-    (println bred)))
+    (play-and-print bred)))
 
+(defn undo
+  []
+  "Remove the last formula from the cell-line, and play the one before it
+  (the new last cell)."
+  (when-not (empty? @history)
+    (swap! history pop)
+    (play-and-print (last @history))))
+
+; REPL Playground
 (comment
-
   (reset-clock)
   (volume 0.1)
-
   (new-line erlehmann/forms)
   (breed erlehmann/forms)
   (mutate)
-
+  (undo)
   (println (last @history))
-
   (stop)
 )
 
