@@ -84,10 +84,16 @@
 (comment
   (reset-clock)
   (volume 0.1)
+
+  (play-and-print (rand-nth evolved/forms))
+  (play-and-print (nth evolved/forms 0))
+
+  (play-and-print (last @history))
   (new-line (into erlehmann/forms evolved/forms))
   (breed (into erlehmann/forms evolved/forms))
   (mutate)
   (undo)
+
   (println (last @history))
   (stop)
 )
