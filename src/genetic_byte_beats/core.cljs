@@ -58,8 +58,10 @@
 (defn mutate
   "Add a new cell to the line by mutating the last
   formula then playing it."
-  []
-  (let [mutated (gene-ops/mutate (last @history))]
+  [method]
+  (let [mutated (cond (= :complexify method) (gene-ops/mutate-complexify (last @history))
+                      (= :simplify method) (gene-ops/mutate-simplify (last @history))
+                      :else (gene-ops/mutate-perturb (last @history)))]
     (swap! history #(conj % mutated))
     (play-and-print mutated)))
 
@@ -87,11 +89,13 @@
 
   (play-and-print (rand-nth evolved/forms))
   (play-and-print (nth evolved/forms 0))
-
   (play-and-print (last @history))
+
   (new-line (into erlehmann/forms evolved/forms))
   (breed (into erlehmann/forms evolved/forms))
-  (mutate)
+  (mutate :complexify)
+  (mutate :simplify)
+  (mutate :perturb)
   (undo)
 
   (println (last @history))

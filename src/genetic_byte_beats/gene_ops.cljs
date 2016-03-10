@@ -23,19 +23,55 @@
   [formula]
   (filter (comp number? zip/node) (op-tree-locs formula)))
 
-(defn mutate
-  "Randomly modify a random number in a formula up to a max percent."
-  ([formula]
-   (mutate formula 0.5))
-  ([formula max-percent]
-   (zip/root (zip/edit (rand-nth (constant-locs formula))
-                       (comp int (partial * (+ 1
-                                               (- (* (rand) 2 max-percent) max-percent))))))))
+(defn list-locs
+  "All sub-trees in the operator tree of a given formula."
+  [formula]
+  (filter (comp list? zip/node) (op-tree-locs formula)))
 
 (defn replace-branch
   "Replace a formula branch rooted at l with a formula branch rooted at r."
   [l r]
   (zip/root (zip/replace l (zip/node r))))
+
+(defn mutate-perturb
+  "Randomly modify a random number in a formula up to a max percent."
+  [formula]
+   (zip/root (zip/edit (rand-nth (constant-locs formula)) #(rand-int 100))))
+
+(defn rand-opped-node
+  "A random AST node that is a function of a formula node."
+  [node]
+  (let [rand-val (rand-int 100)]
+    (rand-nth (vec [`(~'bit-shift-right ~'t ~node)
+                    `(~'bit-shift-right ~node ~rand-val)
+                    `(~'bit-shift-left ~'t ~node)
+                    `(~'bit-shift-left ~node ~rand-val)
+                    `(~'* ~'t ~node)
+                    `(~'* ~node ~rand-val)
+                    `(~'% ~'t ~node)
+                    `(~'% ~node ~rand-val)
+                    `(~'bit-or ~'t ~node)
+                    `(~'bit-or ~'t ~rand-val)
+                    `(~'bit-xor ~'t ~node)
+                    `(~'bit-xor ~node ~rand-val)
+                    `(~'bit-and ~'t ~node)
+                    `(~'bit-and ~node ~rand-val)
+                    `(~'js/Math.sin ~node)
+                    `(~'js/Math.tan ~node)]))))
+
+(defn mutate-complexify
+  "Mutate a formula by randomly replace one of its sub-trees with a
+   function involving that subtree and t."
+  [formula]
+  (let [target-node (rand-nth (op-tree-locs formula))]
+    (zip/root (zip/edit target-node rand-opped-node))))
+
+(defn mutate-simplify
+  "Mutate a formula by randomly replace one of its sub-trees with a
+   constant."
+  [formula]
+  (let [target-node (rand-nth (list-locs formula))]
+    (zip/root (zip/edit target-node #(rand-int 100)))))
 
 (defn crossover
   "Return a breed two formula, switching a random branch in l
@@ -49,4 +85,4 @@
   "Return a child formula resulting from crossing over two randomly chosen
    formula from forms, then mutating it."
   [forms]
-  (mutate (crossover (rand-nth forms) (rand-nth forms))))
+  (mutate-perturb (crossover (rand-nth forms) (rand-nth forms))))
