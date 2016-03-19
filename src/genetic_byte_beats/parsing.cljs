@@ -84,10 +84,10 @@
   [ast]
   (cond
     (= () ast) "()"
-    (and (list? ast) (= (count ast) 1)) (string-from-ast (first ast))
-    (and (list? ast) (= (count ast) 2)) (str (op-string-output-map (first ast))
+    (and (seq? ast) (= (count ast) 1)) (string-from-ast (first ast))
+    (and (seq? ast) (= (count ast) 2)) (str (op-string-output-map (first ast))
                                              "(" (string-from-ast (second ast)) ")")
-    (and (list? ast) (= (count ast) 3)) (str "(" (string-from-ast (second ast))
+    (and (seq? ast) (= (count ast) 3)) (str "(" (string-from-ast (second ast))
                                              " " (op-string-output-map (first ast))
                                              " " (string-from-ast (nth ast 2)) ")")
     :else (str ast)))
