@@ -16,4 +16,7 @@
    '(* (* (mod 65278 (bit-and (bit-shift-left t 6) (bit-shift-right t 7))) t) 4)
    '(bit-xor (bit-or (bit-shift-right t 5) (bit-shift-left t 8)) (bit-and (* t 2) (bit-or (bit-shift-right t (bit-shift-right t 8)) (bit-shift-left t 2))))
    '(bit-and (bit-shift-right (bit-shift-left t (bit-and t t)) (bit-shift-left t (* t 7))) (bit-shift-left t (bit-or t (bit-or t 3))))
-   '(+ (/ (* (* (bit-shift-right t 8) (- (bit-shift-right (bit-and t 16) 3) 83)) 128) 65) 63)])
+   '(+ (/ (* (* (bit-shift-right t 8) (- (bit-shift-right (bit-and t 16) 3) 83)) 128) 65) 63)
+   '(bit-xor (bit-shift-right (/ t 6) 11) (bit-and (bit-shift-right (/ t 48) 8) (* (bit-shift-right (/ t 6) (bit-or (bit-shift-right (/ t (bit-shift-right (/ t 12) 9)) 4) (bit-shift-left t 3))) t)))
+   '(bit-or (bit-or 10 (bit-and (bit-or (bit-shift-right (/ t 12) 3) (bit-shift-left t 4)) (bit-and (bit-shift-right (/ t 12) 2.5) (* (bit-shift-right (/ t 4) (int (/ t 6))) t)))) (bit-and (* t (bit-and t t)) (bit-or (bit-shift-right (/ (bit-and t t) 12) 66) (bit-shift-left t 2))))
+   ])
