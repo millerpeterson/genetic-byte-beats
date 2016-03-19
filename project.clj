@@ -8,7 +8,8 @@
                  [org.clojure/clojurescript "1.7.170"]
                  [org.clojure/core.async "0.2.374"]
                  [figwheel-sidecar "0.5.0"]
-                 [com.lucasbradstreet/instaparse-cljs "1.4.1.0"]]
+                 [com.lucasbradstreet/instaparse-cljs "1.4.1.0"]
+                 [reagent "0.6.0-alpha"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]]
 
