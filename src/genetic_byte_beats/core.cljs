@@ -2,8 +2,8 @@
   (:require [genetic-byte-beats.forms.erlehmann :as erlehmann]
             [genetic-byte-beats.gene-ops :as gene-ops]
             [genetic-byte-beats.io :as io]
-            [genetic-byte-beats.parsing :as parsing]
             [genetic-byte-beats.forms.evolved :as evolved]
+            [genetic-byte-beats.web-ui :as web-ui]
             [reagent.core :as r]))
 
 (enable-console-print!)
@@ -12,6 +12,7 @@
 (defonce vol-node (io/volume-node ctx 0.1))
 (defonce processor-node (io/script-processor-node ctx 4096 1 1))
 (defonce clock (atom 0))
+
 (defonce history (r/atom []))
 
 (defn reset-clock
@@ -105,62 +106,15 @@
 
 )
 
-; Web Front-end
-
-(defn play-controls
+(defn start-web-ui
   []
-  [:div
-   [:button
-    {:on-click #(play-and-print (last @history))}
-    "Play"]
-   [:button
-    {:on-click #(stop)}
-    "Stop"]])
+  (web-ui/run history {:breed breed
+                       :mutate mutate
+                       :undo undo
+                       :play-and-print play-and-print
+                       :new-line new-line
+                       :stop stop}))
 
-(defn genetic-controls
-  []
-  [:div
-   [:button
-    {:on-click #(breed (into erlehmann/forms evolved/forms))}
-    "Crossover"]
-   [:button
-    {:on-click #(mutate :perturb)}
-    "Mutate"]
-   [:button
-    {:on-click #(mutate :complexify)}
-    "Complexify"]
-   [:button
-    {:on-click #(mutate :simplify)}
-    "Simplify"]])
+(defn on-js-reload [] (start-web-ui))
 
-(defn history-controls
-  []
-  [:div
-   [:button
-    {:on-click #(undo)}
-    "Undo"]
-   [:button
-    {:on-click #(new-line (into erlehmann/forms evolved/forms))}
-    "New Line"]])
-
-(defn cell-history
-  []
-  [:ul
-   (for [cell-ast (reverse @history)]
-     (let [form-string (parsing/string-from-ast cell-ast)]
-       ^{:key form-string} [:li form-string]))])
-
-(defn app
-  []
-  [:div
-   [play-controls]
-   [genetic-controls]
-   [history-controls]
-   [cell-history]])
-
-(defn ^:export run []
-  (r/render [app]
-            (js/document.getElementById "app")))
-
-(defn on-js-reload []
-  (run))
+(start-web-ui)

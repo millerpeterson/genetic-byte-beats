@@ -1,2 +1,21 @@
-/* some style */
+body {
+    padding: 15px;
+}
 
+button {
+    margin: 15px 5px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    font-family: monospace;
+    margin-top: 10px;
+}
+
+#cell-history {
+    font-size: 18px;
+    margin-top: 20px;
+}
