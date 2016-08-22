@@ -9,7 +9,7 @@
 (enable-console-print!)
 
 (defonce ctx (io/context))
-(defonce vol-node (io/volume-node ctx 0.1))
+(defonce vol-node (io/volume-node ctx 0.5))
 (defonce processor-node (io/script-processor-node ctx 4096 1 1))
 (defonce clock (atom 0))
 
