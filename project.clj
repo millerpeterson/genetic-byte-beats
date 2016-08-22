@@ -35,7 +35,6 @@
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/genetic_byte_beats.js"
                            :main genetic-byte-beats.core
-                           :optimizations :advanced
                            :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
