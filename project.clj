@@ -33,7 +33,9 @@
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/genetic_byte_beats.js"
+                :compiler {:output-to "resources/public/js/prod/genetic_byte_beats.js"
+                           :output-dir "resources/public/js/prod/out"
+                           :asset-path "js/prod/out"
                            :main genetic-byte-beats.core
                            :pretty-print false}}]}
 
